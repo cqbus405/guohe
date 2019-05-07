@@ -41,6 +41,16 @@ exports.products = async function(req, res) {
 	})
 }
 
+exports.product = async function(req, res) {
+	var id = req.query.id
+	var product = await contentsService.productSync(id)
+	return res.status(200).json({
+		code: 0,
+		msg: '成功',
+		data: product
+	})
+}
+
 exports.test = async function(req, res) {
 	var param = req.params.id
 

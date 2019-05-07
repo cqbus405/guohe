@@ -8,6 +8,9 @@ var contentsModel = require('../models/contents.model');
 var mediaModel = require('../models/media.model');
 
 var url = 'http://172.168.10.21:3001'
+var productId = '5ccf8a1d453e14324c6cc9e2'
+var contactId = '5ccf9881453e14324c6cc9fd'
+var companyId = '5ccf9720453e14324c6cc9fa'
 
 /**
  * 单条内容
@@ -559,8 +562,23 @@ exports.productsSync = async function(currentPage) {
   return products
 }
 
-var getContentsSync = function(type) {
+exports.productSync = async function(id) {
+  var product = await getProductSync(id)
+  var contact = await getContactSync()
+  var company = await getCompanySync()
+  var recommendation = await getRecommendationSync()
+  return {
+    product: product,
+    contact: contact,
+    company: company,
+    recommendation: recommendation
+  }
+}
+
+var getContentsSync = async function(type) {
   if (!type) type = 0
+
+  var phoneNumber = await getPhoneNumberSync()
 
   return new Promise(function(resolve, reject) {
     contentsModel.find({
@@ -569,7 +587,7 @@ var getContentsSync = function(type) {
     })
       .sort('date')
       .limit(15)
-      .select('_id category title content extensions')
+      .select('_id category title content extensions thumbnail')
       .populate('category', '_id name')
       .populate('thumbnail', 'fileName description date src')
       .exec(function (err, contents) {
@@ -606,7 +624,8 @@ var getContentsSync = function(type) {
               name: content.title,
               feature: content.extensions.feature,
               price: content.extensions.price,
-              image: url + content.thumbnail.src
+              image: url + content.thumbnail.src,
+              phone: phoneNumber
             }
 
             var production = {
@@ -614,7 +633,8 @@ var getContentsSync = function(type) {
               hot: isHot,
               name: content.title,
               feature: content.extensions.feature,
-              image: url + content.thumbnail.src 
+              image: url + content.thumbnail.src,
+              phone: phoneNumber
             }
 
             recommendations.push(recommendation)
@@ -678,11 +698,13 @@ var getContentsSync = function(type) {
  * @param    {[type]}                 currentPage [description]
  * @return   {[type]}                             [description]
  */
-var getProductionsSync = function(options) {
+var getProductionsSync = async function(options) {
+  var phoneNumber = await getPhoneNumberSync()
+
   var query = {
     deleted: false,
     status: "pushed",
-    category: "5ccf8a1d453e14324c6cc9e2"
+    category: productId
   }
 
   if (options.type !== '1') query['extensions.type'] = options.type
@@ -725,6 +747,7 @@ var getProductionsSync = function(options) {
             feature: content.extensions.feature,
             price: content.extensions.price,
             image: url + content.thumbnail.src,
+            phone: phoneNumber
           }
 
           productions.push(product)
@@ -733,4 +756,209 @@ var getProductionsSync = function(options) {
         resolve(productions)
       })
   })  
+}
+
+var getPhoneNumberSync = function() {
+  return new Promise(function(resolve, reject) {
+    var query = {
+      deleted: false,
+      status: "pushed",
+      category: contactId
+    }
+
+    contentsModel.findOne(query)
+      .select('title content category extensions')
+      .populate('category', 'name path')
+      .exec(function (err, contact) {
+        if (err) {
+          reject(err)
+        }
+
+        var phoneNumber = contact.extensions.phone1
+
+        resolve(phoneNumber)
+      })    
+  })
+}
+
+var getProductSync = function(id) {
+  return new Promise(function(resolve, reject) {
+    var query = {
+      deleted: false,
+      status: "pushed",
+      _id: id
+    }
+
+    contentsModel.findOne(query)
+      .select('_id title content extensions thumbnail')
+      .populate('thumbnail', 'fileName description date src')
+      .exec(function (err, content) {
+        if (err) {
+          reject(err)
+        }   
+
+        if (content.thumbnail) var thumbnailSrc = content.thumbnail.src
+
+        content = content.toObject()
+        if (_.get(content, 'category.path')) content.url = content.category.path + '/' + content.alias
+
+        if (content.thumbnail) content.thumbnail.src = thumbnailSrc 
+
+        delete content.alias
+
+        var pictures = content.extensions.picture
+        var pictureList = []
+        for (var i = 0; i < pictures.length; ++i) {
+          var picture = pictures[i]
+          var src = url + picture.src
+          pictureList[i] = src
+        }
+
+        var product = {
+          id: content._id,
+          name: content.title,
+          content: content.content,
+          pictures: pictureList
+        }
+
+        resolve(product)
+      })
+  })
+}
+
+var getContactSync = function() {
+  return new Promise(function(resolve, reject) {
+    var query = {
+      deleted: false,
+      status: "pushed",
+      category: contactId
+    }
+
+    contentsModel.findOne(query)
+      .select('extensions')
+      .exec(function (err, contact) {
+        if (err) {
+          reject(err)
+        }
+
+        var phoneNumber1 = contact.extensions.phone1
+        var phoneType1 = contact.extensions.type1
+        var phoneNumber2 = contact.extensions.phone2
+        var phoneType2 = contact.extensions.type2
+        var address = contact.extensions.address
+
+        contact = {
+          phones: [{
+            phoneNumber: phoneNumber1,
+            type: {
+              code: phoneType1,
+              name: phoneType1 === '1' ? '座机' : '手机'
+            }
+          }, {
+            phoneNumber: phoneNumber2,
+            type: {
+              code: phoneType2,
+              name: phoneType2 === '1' ? '座机' : '手机'                
+            }
+          }],
+          address: address
+        }
+
+        resolve(contact)
+      })    
+  })  
+}
+
+var getCompanySync = function() {
+  return new Promise(function(resolve, reject) {
+    var query = {
+      deleted: false,
+      status: "pushed",
+      category: companyId
+    }
+
+    contentsModel.findOne(query)
+      .select('title content category extensions thumbnail')
+      .populate('category', 'name path')
+      .populate('thumbnail', 'fileName description date src')
+      .exec(function (err, content) {
+        if (err) {
+          reject(err)
+        }
+
+        if (content.thumbnail) var thumbnailSrc = content.thumbnail.src
+
+        content = content.toObject()
+        if (_.get(content, 'category.path')) content.url = content.category.path + '/' + content.alias
+
+        if (content.thumbnail) content.thumbnail.src = thumbnailSrc 
+
+        delete content.alias
+
+        var company = {}
+        company.name = content.title
+        company.description = content.content
+        company.website = content.extensions.website
+        company.image  = url + content.thumbnail.src
+
+        resolve(company)
+      })    
+  })  
+}
+
+var getRecommendationSync = async function() {
+  var phoneNumber = await getPhoneNumberSync()
+
+  var query = {
+    deleted: false,
+    status: "pushed",
+    category: productId
+  }
+
+  return new Promise(function(resolve, reject) {
+    contentsModel.find(query)
+      .sort({date: 'desc'})
+      .limit(5)
+      .select('_id category title content extensions thumbnail')
+      .populate('thumbnail', 'fileName description date src')
+      .exec(function (err, contents) {
+        if (err) {
+          reject(err)
+        }
+
+        var recommendations = []
+        contents = _.map(contents, function(content) {
+          if (content.thumbnail) var thumbnailSrc = content.thumbnail.src
+
+          content = content.toObject()
+          if (_.get(content, 'category.path')) content.url = content.category.path + '/' + content.alias
+
+          if (content.thumbnail) content.thumbnail.src = thumbnailSrc
+
+          delete content.alias
+
+          var extensions = content.extensions
+          var isHot = false
+          if (extensions.hasOwnProperty('hot')) {
+            isHot = true 
+          } else {
+            isHot = false
+          }
+
+          var product = {
+            id: content._id,
+            hot: isHot,
+            name: content.title,
+            feature: content.extensions.feature,
+            price: content.extensions.price,
+            image: url + content.thumbnail.src,
+            phone: phoneNumber
+          }
+
+          recommendations.push(product)
+        })
+        
+        resolve(recommendations)
+      })
+  })    
 }

@@ -186,7 +186,8 @@ module.exports = {
       '/products': { get: 'guohe.products' },
       '/test': {
         '/:id': { get: 'guohe.test' }
-      }
+      },
+      '/product': { get: 'guohe.product' }
     }
   },
 
