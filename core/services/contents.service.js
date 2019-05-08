@@ -626,7 +626,7 @@ var getProductionsSync = async function(options) {
           reject(err)
         }
 
-        if (!contents) resolve(null)
+        if (!contents) resolve({})
 
         var productions = []
         contents = _.map(contents, function(content) {
@@ -687,7 +687,7 @@ var getPhoneNumberSync = function() {
           reject(err)
         }
 
-        if (!contact) resolve(null)
+        if (!contact) resolve({})
 
         var phoneNumber = contact.extensions.phone1
 
@@ -719,7 +719,7 @@ var getProductSync = function(id) {
           reject(err)
         }   
 
-        if (!content) resolve(null)
+        if (!content) resolve({})
 
         if (content.thumbnail) var thumbnailSrc = content.thumbnail.src
 
@@ -771,7 +771,7 @@ var getContactSync = function() {
           reject(err)
         }
 
-        if (!contact) resolve(null)
+        if (!contact) resolve({})
 
         var phoneNumber1 = contact.extensions.phone1
         var phoneType1 = contact.extensions.type1
@@ -824,9 +824,9 @@ var getCompanySync = function() {
           reject(err)
         }
 
-        if (!content) resolve(null)
+        if (!content) resolve({})
 
-        if (content && content.thumbnail) var thumbnailSrc = content.thumbnail.src
+        if (content.thumbnail) var thumbnailSrc = content.thumbnail.src
 
         content = content.toObject()
         if (_.get(content, 'category.path')) content.url = content.category.path + '/' + content.alias
