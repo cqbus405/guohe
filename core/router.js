@@ -184,10 +184,8 @@ module.exports = {
       '/company': { get: 'guohe.company' },
       '/contact': { get: 'guohe.contact' },
       '/products': { get: 'guohe.products' },
-      '/test': {
-        '/:id': { get: 'guohe.test' }
-      },
-      '/product': { get: 'guohe.product' }
+      '/product': { get: 'guohe.product' },
+      '/phone': { get: 'guohe.phone' }
     }
   },
 

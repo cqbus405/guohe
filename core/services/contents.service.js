@@ -542,19 +542,35 @@ exports.remove = function (options, callback) {
   }
 };
 
+/****************************************************************************************************************/
+
 exports.mainSync = async function() {
-  var contents = await getContentsSync()
-  return contents
+  var recommendation = await getRecommendationSync()
+  var production = await getRecommendationSync()
+  var company = await getCompanySync()
+  var contact = await getContactSync()
+  return {
+    recommendations: recommendation,
+    productions: {
+      list: production
+    },
+    company: company,
+    contact: contact
+  }
 }
 
 exports.companySync = async function() {
-  var company = await getContentsSync(2)
-  return company
+  var company = await getCompanySync()
+  var contact = await getContactSync()
+  return {
+    company: company,
+    contact: contact
+  }
 }
 
 exports.contactSync = async function() {
-  var company = await getContentsSync(3)
-  return company
+  var contact = await getContactSync()
+  return contact
 }
 
 exports.productsSync = async function(currentPage) {
@@ -575,127 +591,9 @@ exports.productSync = async function(id) {
   }
 }
 
-/**
- * 获取首页信息
- * @Author   q
- * @DateTime 2019-05-07T17:10:53+0800
- * @param    {[type]}                 type [description]
- * @return   {[type]}                      [description]
- */
-var getContentsSync = async function(type) {
-  if (!type) type = 0
-
+exports.phoneSync = async function() {
   var phoneNumber = await getPhoneNumberSync()
-
-  return new Promise(function(resolve, reject) {
-    contentsModel.find({
-      deleted: false,
-      status: "pushed"
-    })
-      .sort('date')
-      .limit(15)
-      .select('_id category title content extensions thumbnail')
-      .populate('category', '_id name')
-      .populate('thumbnail', 'fileName description date src')
-      .exec(function (err, contents) {
-        if (err) {
-          reject(err)
-        }
-
-        var data = {}
-        var recommendations = []
-        var productionList = []
-        var company = {}
-        var contact = {}
-        contents = _.map(contents, function(content) {
-          if (content.thumbnail) var thumbnailSrc = content.thumbnail.src
-
-          content = content.toObject()
-          if (_.get(content, 'category.path')) content.url = content.category.path + '/' + content.alias
-
-          if (content.thumbnail) content.thumbnail.src = thumbnailSrc
-
-          var category = content.category.name
-          if (category === '产品') {
-            var extensions = content.extensions
-            var isHot = false
-            if (extensions.hasOwnProperty('hot')) {
-              isHot = true 
-            } else {
-              isHot = false
-            }
-
-            var recommendation = {
-              id: content._id,
-              hot: isHot,
-              name: content.title,
-              feature: content.extensions.feature,
-              price: content.extensions.price,
-              image: url + content.thumbnail.src,
-              phone: phoneNumber
-            }
-
-            var production = {
-              id: content._id,
-              hot: isHot,
-              name: content.title,
-              feature: content.extensions.feature,
-              image: url + content.thumbnail.src,
-              phone: phoneNumber
-            }
-
-            recommendations.push(recommendation)
-            productionList.push(production)
-          } else if (category === '公司信息') {
-            company.name = content.title
-            company.description = content.content
-            company.image  = url + content.thumbnail.src
-          } else if (category === '联系方式') {
-            var phoneNumber1 = content.extensions.phone1
-            var phoneType1 = content.extensions.type1
-            var phoneNumber2 = content.extensions.phone2
-            var phoneType2 = content.extensions.type2
-            var address = content.extensions.address
-            contact = {
-              phones: [{
-                phoneNumber: phoneNumber1,
-                type: {
-                  code: phoneType1,
-                  name: phoneType1 === '1' ? '座机' : '手机'
-                }
-              }, {
-                phoneNumber: phoneNumber2,
-                type: {
-                  code: phoneType2,
-                  name: phoneType2 === '1' ? '座机' : '手机'                
-                }
-              }],
-              address: address
-            }
-          }
-
-          delete content.alias
-
-          if (type === 0) {
-            data.recommendations = recommendations
-            data.productions = {
-              list: productionList
-            }
-            data.company = company
-            data.contact = contact
-          } else if (type === 1) {
-
-          } else if (type === 2) {
-            data.company = company
-            data.contact = contact            
-          } else if (type === 3) {
-            data.contact = contact            
-          }
-        })
-        
-        resolve(data)
-      })
-  })
+  return phoneNumber
 }
 
 /**
