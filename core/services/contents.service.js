@@ -7,10 +7,10 @@ var categories = require('../models/categories.model');
 var contentsModel = require('../models/contents.model');
 var mediaModel = require('../models/media.model');
 
-var url = 'http://172.168.10.21:3001'
-var productId = '5ccf8a1d453e14324c6cc9e2'
-var contactId = '5ccf9881453e14324c6cc9fd'
-var companyId = '5ccf9720453e14324c6cc9fa'
+var url = 'http://39.107.241.170:3000'
+var productId = '5cd284595fae866874feca02'
+var contactId = '5cd2846f5fae866874feca03'
+var companyId = '5cd284865fae866874feca04'
 
 /**
  * 单条内容
