@@ -795,20 +795,34 @@ var getContactSync = function() {
         var phoneType2 = contact.extensions.type2
         var address = contact.extensions.address
 
+        var phone1 = {
+          phoneNumber: phoneNumber1,
+          type: {
+            code: phoneType1,
+            name: phoneType1 === '1' ? '座机' : '手机'
+          }          
+        }
+
+        var phone2 = {
+          phoneNumber: phoneNumber2,
+          type: {
+            code: phoneType2,
+            name: phoneType2 === '1' ? '座机' : '手机'                
+          }          
+        }
+
+        var phones = []
+
+        if (phoneNumber1) {
+          phones.push(phone1)
+        }
+
+        if (phoneNumber2) {
+          phones.push(phone2)
+        }
+
         contact = {
-          phones: [{
-            phoneNumber: phoneNumber1,
-            type: {
-              code: phoneType1,
-              name: phoneType1 === '1' ? '座机' : '手机'
-            }
-          }, {
-            phoneNumber: phoneNumber2,
-            type: {
-              code: phoneType2,
-              name: phoneType2 === '1' ? '座机' : '手机'                
-            }
-          }],
+          phones: phones
           address: address
         }
 
