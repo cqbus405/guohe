@@ -575,6 +575,13 @@ exports.productSync = async function(id) {
   }
 }
 
+/**
+ * 获取首页信息
+ * @Author   q
+ * @DateTime 2019-05-07T17:10:53+0800
+ * @param    {[type]}                 type [description]
+ * @return   {[type]}                      [description]
+ */
 var getContentsSync = async function(type) {
   if (!type) type = 0
 
@@ -758,6 +765,12 @@ var getProductionsSync = async function(options) {
   })  
 }
 
+/**
+ * 获取第一个电话号码
+ * @Author   q
+ * @DateTime 2019-05-07T17:10:19+0800
+ * @return   {[type]}                 [description]
+ */
 var getPhoneNumberSync = function() {
   return new Promise(function(resolve, reject) {
     var query = {
@@ -781,6 +794,13 @@ var getPhoneNumberSync = function() {
   })
 }
 
+/**
+ * 获取产品详情
+ * @Author   q
+ * @DateTime 2019-05-07T17:09:53+0800
+ * @param    {[type]}                 id [description]
+ * @return   {[type]}                    [description]
+ */
 var getProductSync = function(id) {
   return new Promise(function(resolve, reject) {
     var query = {
@@ -826,6 +846,12 @@ var getProductSync = function(id) {
   })
 }
 
+/**
+ * 获取联系方式
+ * @Author   q
+ * @DateTime 2019-05-07T17:09:46+0800
+ * @return   {[type]}                 [description]
+ */
 var getContactSync = function() {
   return new Promise(function(resolve, reject) {
     var query = {
@@ -869,6 +895,12 @@ var getContactSync = function() {
   })  
 }
 
+/**
+ * 获取公司信息
+ * @Author   q
+ * @DateTime 2019-05-07T17:09:32+0800
+ * @return   {[type]}                 [description]
+ */
 var getCompanySync = function() {
   return new Promise(function(resolve, reject) {
     var query = {
@@ -906,6 +938,12 @@ var getCompanySync = function() {
   })  
 }
 
+/**
+ * 获取商品推荐 倒序排列前五的商品
+ * @Author   q
+ * @DateTime 2019-05-07T17:09:02+0800
+ * @return   {[type]}                 [description]
+ */
 var getRecommendationSync = async function() {
   var phoneNumber = await getPhoneNumberSync()
 

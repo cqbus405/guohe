@@ -66,8 +66,8 @@ angular.module('controllers').controller('main', ['$scope', '$http',
 		/**
 		 * 统计
 		 */
-		$http.put('/api/statistics', {
-			hostname: $scope.website.hostname
-		});
+		// $http.put('/api/statistics', {
+		// 	hostname: $scope.website.hostname
+		// });
 	}
 ]);

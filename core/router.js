@@ -195,26 +195,26 @@ module.exports = {
    * 网站前台
    */
   // 检查安装状态
-  '*': { get: 'install.access' },
+  // '*': { get: 'install.access' },
 
   // 首页
-  '/': { get: 'home'},
+  // '/': { get: 'home'},
 
   // 搜索页
-  '/search': { get: 'search' },
+  // '/search': { get: 'search' },
 
   // 频道页
-  '/:channel*': { get: 'channel' },
+  // '/:channel*': { get: 'channel' },
 
   // 栏目页
-  '/:column*': { get: 'column' },
+  // '/:column*': { get: 'column' },
 
   // 单页
-  '/:page*': { get: 'page' },
+  // '/:page*': { get: 'page' },
 
   // 内容页
-  '/:content*': { get: 'content' },
+  // '/:content*': { get: 'content' },
 
   // 错误页
-  '/*': { get: 'errors.notFound' }
+  // '/*': { get: 'errors.notFound' }
 };
