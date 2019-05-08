@@ -624,9 +624,13 @@ var getProductionsSync = async function(options) {
       .exec(function (err, contents) {
         if (err) {
           reject(err)
+          return
         }
 
-        if (!contents) resolve({})
+        if (!contents) {
+          resolve(null)
+          return
+        }
 
         var productions = []
         contents = _.map(contents, function(content) {
@@ -685,9 +689,13 @@ var getPhoneNumberSync = function() {
       .exec(function (err, contact) {
         if (err) {
           reject(err)
+          return
         }
 
-        if (!contact) resolve({})
+        if (!contact) {
+          resolve(null)
+          return
+        }
 
         var phoneNumber = contact.extensions.phone1
 
@@ -717,9 +725,13 @@ var getProductSync = function(id) {
       .exec(function (err, content) {
         if (err) {
           reject(err)
+          return
         }   
 
-        if (!content) resolve({})
+        if (!content) {
+          resolve(null)
+          return
+        }
 
         if (content.thumbnail) var thumbnailSrc = content.thumbnail.src
 
@@ -769,9 +781,13 @@ var getContactSync = function() {
       .exec(function (err, contact) {
         if (err) {
           reject(err)
+          return
         }
 
-        if (!contact) resolve({})
+        if (!contact) {
+          resolve(null)
+          return
+        }
 
         var phoneNumber1 = contact.extensions.phone1
         var phoneType1 = contact.extensions.type1
@@ -874,6 +890,7 @@ var getRecommendationSync = async function() {
       .exec(function (err, contents) {
         if (err) {
           reject(err)
+          return
         }
 
         var recommendations = []
