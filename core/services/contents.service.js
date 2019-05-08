@@ -822,9 +822,13 @@ var getCompanySync = function() {
       .exec(function (err, content) {
         if (err) {
           reject(err)
+          return
         }
 
-        if (!content) resolve({})
+        if (!content) {
+          resolve(null)
+          return
+        }
 
         if (content.thumbnail) var thumbnailSrc = content.thumbnail.src
 
