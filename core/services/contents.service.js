@@ -826,7 +826,7 @@ var getCompanySync = function() {
 
         if (!content) resolve(null)
 
-        if (content.thumbnail) var thumbnailSrc = content.thumbnail.src
+        if (content && content.thumbnail) var thumbnailSrc = content.thumbnail.src
 
         content = content.toObject()
         if (_.get(content, 'category.path')) content.url = content.category.path + '/' + content.alias
