@@ -829,7 +829,7 @@ var getCompanySync = function() {
         company.name = content.title
         company.description = content.content
         company.website = content.extensions.website
-        company.image  = url + content.thumbnail.src
+        company.image  = content.thumbnail.src ? url + content.thumbnail.src : ''
 
         resolve(company)
       })    
