@@ -822,7 +822,7 @@ var getContactSync = function() {
         }
 
         contact = {
-          phones: phones
+          phones: phones,
           address: address
         }
 
