@@ -657,7 +657,7 @@ var getProductionsSync = async function(options) {
             name: content.title,
             feature: content.extensions.feature,
             price: content.extensions.price,
-            image: url + content.thumbnail.src,
+            image: content.thumbnail && content.thumbnail.src ? url + content.thumbnail.src : '',
             phone: phoneNumber
           }
 
