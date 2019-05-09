@@ -7,7 +7,7 @@ var categories = require('../models/categories.model');
 var contentsModel = require('../models/contents.model');
 var mediaModel = require('../models/media.model');
 
-var url = 'http://39.107.241.170:3000'
+var url = 'http://39.107.241.170:3001'
 var productId = '5cd284595fae866874feca02'
 var companyId = '5cd2846f5fae866874feca03'
 var contactId = '5cd284865fae866874feca04'
