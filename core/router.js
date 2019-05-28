@@ -5,7 +5,7 @@ module.exports = {
   /**
    * 后台首页
    */
-  '/admin*': {
+  '/': {
     get: 'admin'
   },
 
